@@ -1,0 +1,120 @@
+@startuml
+title Sistem Informasi Geospasial & Tata Ruang Terpadu\nTotal CFP = 84
+
+actor User
+actor Petugas
+participant UI
+participant System
+database DB
+participant API
+participant Notification
+
+== MANAJEMEN LAYER PETA GIS (CFP 1–8) ==
+Petugas -> UI : (1) Membuka menu pengelolaan layer peta
+UI -> System : (2) Mengirim permintaan data layer peta
+System -> DB : (3) Mengambil daftar layer GIS
+DB -> System : (4) Mengirim data layer
+System -> UI : (5) Menampilkan layer peta
+Petugas -> UI : (6) Menambah atau mengubah layer
+UI -> System : (7) Mengirim perubahan layer
+System -> DB : (8) Menyimpan konfigurasi layer
+
+== VISUALISASI PETA INTERAKTIF (CFP 9–12) ==
+User -> UI : (9) Membuka tampilan peta interaktif
+UI -> System : (10) Meminta data peta
+System -> DB : (11) Mengambil data spasial
+System -> UI : (12) Menampilkan peta interaktif
+
+== RENCANA DETAIL TATA RUANG (RDTR) (CFP 13–20) ==
+Petugas -> UI : (13) Membuka dokumen RDTR
+UI -> System : (14) Mengirim permintaan data RDTR
+System -> DB : (15) Mengambil data RDTR
+DB -> System : (16) Mengirim data RDTR
+System -> UI : (17) Menampilkan RDTR
+Petugas -> UI : (18) Memperbarui data RDTR
+UI -> System : (19) Mengirim perubahan RDTR
+System -> DB : (20) Menyimpan pembaruan RDTR
+
+== ANALISIS KESESUAIAN LAHAN (CFP 21–27) ==
+User -> UI : (21) Memilih lokasi untuk dianalisis
+UI -> System : (22) Mengirim data lokasi
+System -> DB : (23) Mengambil data zonasi lahan
+System -> DB : (24) Mengambil aturan tata ruang
+System -> UI : (25) Menampilkan hasil analisis lahan
+System -> DB : (26) Menyimpan hasil analisis
+System -> DB : (27) Mencatat riwayat analisis
+
+== CEK KESESUAIAN LOKASI ONLINE (CFP 28–34) ==
+User -> UI : (28) Menginput titik lokasi online
+UI -> System : (29) Mengirim koordinat lokasi
+System -> DB : (30) Mengambil data peruntukan lahan
+System -> DB : (31) Mengambil ketentuan zonasi
+System -> UI : (32) Menampilkan status kesesuaian lokasi
+System -> DB : (33) Menyimpan hasil pengecekan
+System -> DB : (34) Mencatat aktivitas pengecekan
+
+== REKOMENDASI TATA RUANG (CFP 35–42) ==
+System -> DB : (35) Mengolah data kesesuaian lahan
+System -> DB : (36) Mengolah data RDTR
+System -> DB : (37) Menentukan alternatif pemanfaatan ruang
+System -> UI : (38) Menampilkan rekomendasi tata ruang
+User -> UI : (39) Memilih rekomendasi
+UI -> System : (40) Mengonfirmasi pilihan rekomendasi
+System -> DB : (41) Menyimpan rekomendasi terpilih
+System -> DB : (42) Mencatat hasil rekomendasi
+
+== TRACKING PROYEK PERUMAHAN (CFP 43–50) ==
+Petugas -> UI : (43) Membuka data proyek perumahan
+UI -> System : (44) Meminta data proyek
+System -> DB : (45) Mengambil data lokasi proyek
+System -> DB : (46) Mengambil status pembangunan
+System -> UI : (47) Menampilkan progres proyek
+Petugas -> UI : (48) Memperbarui status proyek
+UI -> System : (49) Mengirim pembaruan status
+System -> DB : (50) Menyimpan progres proyek
+
+== LAPORAN PELANGGARAN TATA RUANG (CFP 51–57) ==
+User -> UI : (51) Melaporkan dugaan pelanggaran tata ruang
+UI -> System : (52) Mengirim data laporan pelanggaran
+System -> DB : (53) Menyimpan laporan pelanggaran
+System -> DB : (54) Menyimpan lokasi pelanggaran
+System -> UI : (55) Menampilkan status laporan
+System -> Notification : (56) Mengirim notifikasi laporan baru
+System -> DB : (57) Mencatat riwayat laporan
+
+== INVENTARISASI KAWASAN PERMUKIMAN (CFP 58–65) ==
+Petugas -> UI : (58) Membuka data kawasan permukiman
+UI -> System : (59) Meminta data inventaris kawasan
+System -> DB : (60) Mengambil data kawasan
+System -> UI : (61) Menampilkan data permukiman
+Petugas -> UI : (62) Memperbarui data kawasan
+UI -> System : (63) Mengirim perubahan data
+System -> DB : (64) Menyimpan data inventaris
+System -> DB : (65) Mencatat histori perubahan
+
+== LAPORAN TATA RUANG BERKALA (CFP 66–71) ==
+Petugas -> UI : (66) Memilih periode laporan tata ruang
+UI -> System : (67) Mengirim permintaan laporan
+System -> DB : (68) Mengambil data tata ruang
+System -> DB : (69) Mengolah data laporan
+System -> UI : (70) Menampilkan laporan berkala
+System -> DB : (71) Menyimpan arsip laporan
+
+== API GEOSPASIAL (CFP 72–78) ==
+System -> API : (72) Mengirim permintaan data geospasial
+API -> System : (73) Mengirim data peta
+System -> DB : (74) Menyimpan cache data geospasial
+System -> UI : (75) Menyajikan data melalui API
+System -> DB : (76) Mencatat penggunaan API
+System -> DB : (77) Mencatat akses pihak eksternal
+System -> DB : (78) Menyimpan log API
+
+== ALERT PERUBAHAN RTRW (CFP 79–84) ==
+System -> DB : (79) Mendeteksi perubahan data RTRW
+System -> DB : (80) Membandingkan versi RTRW
+System -> Notification : (81) Mengirim notifikasi perubahan RTRW
+Notification -> User : (82) Menerima notifikasi perubahan
+System -> UI : (83) Menampilkan informasi perubahan RTRW
+System -> DB : (84) Mencatat log notifikasi
+
+@enduml

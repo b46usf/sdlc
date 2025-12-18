@@ -1,0 +1,100 @@
+@startuml
+title Sistem Informasi Terminal & Transportasi Bus\nTotal CFP = 68
+
+actor Penumpang
+actor Petugas
+participant UI
+participant System
+database DB
+participant API
+participant Payment
+
+== JADWAL KEBERANGKATAN BUS (CFP 1–8) ==
+Penumpang -> UI : (1) Membuka menu jadwal keberangkatan bus
+UI -> System : (2) Mengirim permintaan jadwal bus
+System -> DB : (3) Mengambil data jadwal keberangkatan
+DB -> System : (4) Mengirim data jadwal bus
+System -> UI : (5) Menampilkan jadwal keberangkatan
+Petugas -> UI : (6) Memperbarui jadwal bus
+UI -> System : (7) Mengirim perubahan jadwal
+System -> DB : (8) Menyimpan jadwal terbaru
+
+== TRACKING KEDATANGAN / KEBERANGKATAN BUS (CFP 9–15) ==
+Petugas -> UI : (9) Membuka fitur pelacakan bus
+UI -> System : (10) Mengirim permintaan posisi bus
+System -> API : (11) Mengambil data GPS bus
+API -> System : (12) Mengirim data posisi bus
+System -> UI : (13) Menampilkan posisi bus secara real-time
+System -> DB : (14) Menyimpan histori pergerakan bus
+System -> DB : (15) Mencatat waktu kedatangan dan keberangkatan
+
+== KELOLA TARIF RETRIBUSI (CFP 16–23) ==
+Petugas -> UI : (16) Membuka menu tarif retribusi
+UI -> System : (17) Mengirim permintaan data tarif
+System -> DB : (18) Mengambil data tarif retribusi
+System -> UI : (19) Menampilkan daftar tarif
+Petugas -> UI : (20) Mengubah tarif retribusi
+UI -> System : (21) Mengirim perubahan tarif
+System -> DB : (22) Menyimpan tarif baru
+System -> DB : (23) Mencatat riwayat perubahan tarif
+
+== PEMBAYARAN RETRIBUSI DIGITAL (CFP 24–31) ==
+Petugas -> UI : (24) Membuat tagihan retribusi
+UI -> System : (25) Mengirim data tagihan
+System -> DB : (26) Menyimpan data tagihan
+System -> Payment : (27) Mengirim permintaan pembayaran digital
+Payment -> System : (28) Mengonfirmasi pembayaran berhasil
+System -> DB : (29) Menyimpan status pembayaran
+System -> UI : (30) Menampilkan bukti pembayaran
+System -> DB : (31) Mencatat transaksi retribusi
+
+== MANAJEMEN DATA PO BUS (CFP 32–39) ==
+Petugas -> UI : (32) Membuka data PO Bus
+UI -> System : (33) Meminta data PO Bus
+System -> DB : (34) Mengambil data perusahaan otobus
+System -> UI : (35) Menampilkan data PO Bus
+Petugas -> UI : (36) Menambah atau mengubah data PO
+UI -> System : (37) Mengirim perubahan data PO
+System -> DB : (38) Menyimpan data PO Bus
+System -> DB : (39) Mencatat histori perubahan data
+
+== MONITORING KINERJA PO (CFP 40–45) ==
+Petugas -> UI : (40) Membuka laporan kinerja PO Bus
+UI -> System : (41) Mengirim permintaan data kinerja
+System -> DB : (42) Mengambil data operasional PO
+System -> DB : (43) Mengolah indikator kinerja
+System -> UI : (44) Menampilkan hasil monitoring PO
+System -> DB : (45) Menyimpan hasil evaluasi
+
+== LAPORAN HARIAN TERMINAL (CFP 46–50) ==
+Petugas -> UI : (46) Memilih periode laporan harian
+UI -> System : (47) Mengirim permintaan laporan
+System -> DB : (48) Mengambil data aktivitas terminal
+System -> UI : (49) Menampilkan laporan harian terminal
+System -> DB : (50) Menyimpan arsip laporan harian
+
+== DASHBOARD ANALYTICS KINERJA (CFP 51–54) ==
+Petugas -> UI : (51) Membuka dashboard analytics
+UI -> System : (52) Meminta data analitik
+System -> DB : (53) Mengambil data statistik terminal
+System -> UI : (54) Menampilkan grafik dan indikator kinerja
+
+== MONITORING FASILITAS TERMINAL (CFP 55–62) ==
+Petugas -> UI : (55) Membuka monitoring fasilitas terminal
+UI -> System : (56) Mengirim permintaan data fasilitas
+System -> DB : (57) Mengambil status fasilitas terminal
+System -> UI : (58) Menampilkan kondisi fasilitas
+Petugas -> UI : (59) Melaporkan kerusakan fasilitas
+UI -> System : (60) Mengirim laporan fasilitas
+System -> DB : (61) Menyimpan laporan fasilitas
+System -> DB : (62) Mencatat histori pemeliharaan
+
+== DISPLAY BOARD REAL-TIME API (CFP 63–68) ==
+System -> API : (63) Mengirim data jadwal ke display board
+API -> System : (64) Mengonfirmasi data diterima
+System -> UI : (65) Menyajikan data real-time
+System -> DB : (66) Menyimpan log pengiriman data
+System -> API : (67) Memperbarui data display board
+System -> DB : (68) Mencatat aktivitas API display
+
+@enduml

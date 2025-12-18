@@ -1,0 +1,108 @@
+@startuml
+title Sistem E-Learning Terintegrasi (Total CFP = 71)
+
+actor User
+actor Guru
+participant UI
+participant System
+database DB
+participant API
+
+== LOGIN SISWA & GURU (CFP 1–6) ==
+User -> UI : (1) Membuka halaman login
+UI -> System : (2) Mengirim data username dan password
+System -> DB : (3) Mengecek data akun pengguna
+DB -> System : (4) Mengembalikan hasil verifikasi akun
+System -> DB : (5) Mencatat riwayat login pengguna
+System -> UI : (6) Menampilkan status login berhasil
+
+== MANAJEMEN KELAS VIRTUAL (CFP 7–21) ==
+Guru -> UI : (7) Membuka menu kelas virtual
+Guru -> UI : (8) Menambahkan materi pembelajaran
+Guru -> UI : (9) Mengatur jadwal kelas
+Guru -> UI : (10) Menentukan daftar siswa
+Guru -> UI : (11) Menambahkan tugas kelas
+Guru -> UI : (12) Mengatur aturan kelas
+Guru -> UI : (13) Membuka forum diskusi kelas
+
+UI -> System : (14) Mengirim permintaan pengelolaan kelas
+UI -> System : (15) Mengirim perubahan data kelas
+
+System -> DB : (16) Mengambil data kelas
+System -> DB : (17) Mengambil data siswa
+System -> DB : (18) Mengambil materi pembelajaran
+
+System -> DB : (19) Menyimpan perubahan kelas
+System -> DB : (20) Menyimpan aktivitas kelas
+System -> DB : (21) Mencatat log pengelolaan kelas
+
+== QUIZ & ASSIGNMENT (CFP 22–39) ==
+User -> UI : (22) Membuat kuis atau tugas baru
+User -> UI : (23) Menyusun soal kuis
+User -> UI : (24) Menentukan pilihan jawaban
+User -> UI : (25) Menentukan bobot nilai
+User -> UI : (26) Mengatur durasi pengerjaan
+User -> UI : (27) Menentukan aturan kuis
+User -> UI : (28) Mengirim jawaban kuis
+User -> UI : (29) Melihat hasil kuis
+
+UI -> System : (30) Mengirim data kuis ke sistem
+UI -> System : (31) Mengirim hasil pengerjaan kuis
+
+System -> DB : (32) Mengambil data kuis
+System -> DB : (33) Mengambil daftar soal
+System -> DB : (34) Mengambil jawaban siswa
+System -> DB : (35) Mengambil nilai kuis
+
+System -> DB : (36) Menyimpan data kuis
+System -> DB : (37) Menyimpan jawaban siswa
+System -> DB : (38) Menyimpan hasil penilaian
+System -> DB : (39) Mencatat aktivitas kuis
+
+== VIDEO CONFERENCE INTEGRATION (CFP 40–48) ==
+User -> UI : (40) Membuka menu konferensi video
+User -> UI : (41) Bergabung ke ruang meeting
+User -> UI : (42) Mengatur perangkat audio dan video
+
+UI -> System : (43) Meminta akses konferensi video
+UI -> System : (44) Mengonfirmasi kehadiran meeting
+
+System -> API : (45) Meminta data meeting ke layanan video
+API -> System : (46) Mengirimkan link konferensi
+
+System -> API : (47) Mencatat sesi konferensi
+System -> API : (48) Menyimpan riwayat meeting
+
+== MONITORING PEMBELAJARAN (CFP 49–59) ==
+Guru -> UI : (49) Membuka halaman monitoring belajar
+Guru -> UI : (50) Menentukan filter pemantauan
+Guru -> UI : (51) Memilih periode pembelajaran
+
+UI -> System : (52) Mengirim permintaan data monitoring
+
+System -> DB : (53) Mengambil data aktivitas siswa
+System -> DB : (54) Mengambil data nilai
+System -> DB : (55) Mengambil data kehadiran
+System -> DB : (56) Mengambil data tugas
+System -> DB : (57) Mengambil hasil kuis
+System -> DB : (58) Mengambil durasi belajar
+System -> DB : (59) Mengambil log pembelajaran
+
+== RAPOR DIGITAL (CFP 60–71) ==
+Guru -> UI : (60) Membuka menu rapor digital
+Guru -> UI : (61) Memasukkan nilai siswa
+Guru -> UI : (62) Menambahkan catatan guru
+
+UI -> System : (63) Mengirim permintaan pembuatan rapor
+
+System -> DB : (64) Mengambil nilai akademik
+System -> DB : (65) Mengambil nilai tugas
+System -> DB : (66) Mengambil nilai kuis
+System -> DB : (67) Mengambil data kehadiran
+System -> DB : (68) Mengambil penilaian sikap
+System -> DB : (69) Mengambil data semester
+
+System -> DB : (70) Menyimpan rapor digital
+System -> DB : (71) Menyimpan catatan guru
+
+@enduml
