@@ -1,103 +1,130 @@
 @startuml
-title Sistem E-Learning Terintegrasi (Total CFP = 77)
+title Sequence Diagram Sistem Informasi SIJAWARA (Admin) - CFP Driven (96 CFP)
 
-actor User
-actor Guru
-participant UI
-participant System
+autonumber
+actor Admin
+boundary UI as "Web Interface"
+control AuthController
+control DashboardController
+control CourseController
+control KDMPController
+control WebinarController
+control UserController
 database DB
-participant API
-participant Notification
 
-== LOGIN SISWA & GURU (CFP 1–6) ==
-User -> UI : (1) Membuka halaman login
-UI -> System : (2) Mengirim data username dan password
-System -> DB : (3) Mengecek data akun pengguna
-DB -> System : (4) Mengembalikan hasil verifikasi akun
-System -> DB : (5) Mencatat riwayat login pengguna
-System -> UI : (6) Menampilkan status login berhasil
+== Login Admin ==
+Admin -> UI : Input email <<E>>
+Admin -> UI : Input password <<E>>
+UI -> AuthController : Kirim email <<E>>
+UI -> AuthController : Kirim password <<E>>
+AuthController -> DB : Read user <<R>>
+AuthController -> DB : Read role <<R>>
+AuthController -> DB : Read status akun <<R>>
+AuthController -> DB : Read password hash <<R>>
+AuthController -> DB : Read konfigurasi sistem <<R>>     // +CFP
+AuthController -> DB : Write session <<W>>
+AuthController -> DB : Write audit login <<W>>
+AuthController --> UI : Status login <<X>>
+UI --> Admin : Dashboard tampil <<X>>
 
-== MANAJEMEN KELAS VIRTUAL (CFP 7–21) ==
-Guru -> UI : (7) Membuka menu kelas virtual
-Guru -> UI : (8) Menambahkan materi pembelajaran
-Guru -> UI : (9) Mengatur jadwal kelas
-Guru -> UI : (10) Menentukan daftar siswa
-Guru -> UI : (11) Menambahkan tugas kelas
-Guru -> UI : (12) Mengatur aturan kelas
-Guru -> UI : (13) Membuka forum diskusi kelas
-UI -> System : (14) Mengirim permintaan pengelolaan kelas
-UI -> System : (15) Mengirim perubahan data kelas
-System -> DB : (16) Mengambil data kelas
-System -> DB : (17) Mengambil data siswa
-System -> DB : (18) Mengambil materi pembelajaran
-System -> DB : (19) Menyimpan perubahan kelas
-System -> DB : (20) Menyimpan aktivitas kelas
-System -> DB : (21) Mencatat log pengelolaan kelas
+== Dashboard Monitoring ==
+Admin -> UI : Request dashboard <<E>>
+UI -> DashboardController : Load dashboard <<E>>
+DashboardController -> DB : Read count kursus <<R>>
+DashboardController -> DB : Read count webinar <<R>>
+DashboardController -> DB : Read count user <<R>>
+DashboardController -> DB : Read notifikasi <<R>>
+DashboardController -> DB : Read data grafik <<R>>
+DashboardController -> DB : Read preferensi dashboard <<R>>   // +CFP
+DashboardController --> UI : Data dashboard <<X>>
+UI --> Admin : Render widget <<X>>
 
-== QUIZ & ASSIGNMENT (CFP 22–39) ==
-User -> UI : (22) Membuat kuis atau tugas baru
-User -> UI : (23) Menyusun soal kuis
-User -> UI : (24) Menentukan pilihan jawaban
-User -> UI : (25) Menentukan bobot nilai
-User -> UI : (26) Mengatur durasi pengerjaan
-User -> UI : (27) Menentukan aturan kuis
-User -> UI : (28) Mengirim jawaban kuis
-User -> UI : (29) Melihat hasil kuis
-UI -> System : (30) Mengirim data kuis ke sistem
-UI -> System : (31) Mengirim hasil pengerjaan kuis
-System -> DB : (32) Mengambil data kuis
-System -> DB : (33) Mengambil daftar soal
-System -> DB : (34) Mengambil jawaban siswa
-System -> DB : (35) Mengambil nilai kuis
-System -> DB : (36) Menyimpan data kuis
-System -> DB : (37) Menyimpan jawaban siswa
-System -> DB : (38) Menyimpan hasil penilaian
-System -> DB : (39) Mencatat aktivitas kuis
+== Manajemen Kursus ==
+Admin -> UI : Input judul kursus <<E>>
+Admin -> UI : Input deskripsi kursus <<E>>
+Admin -> UI : Input tanggal kursus <<E>>
+Admin -> UI : Input benefit kursus <<E>>
+UI -> CourseController : Submit kursus <<E>>
+CourseController -> DB : Read kategori <<R>>
+CourseController -> DB : Read instruktur <<R>>
+CourseController -> DB : Read validasi judul <<R>>
+CourseController -> DB : Write kursus <<W>>
+CourseController -> DB : Write detail kursus <<W>>
+CourseController -> DB : Write benefit kursus <<W>>
+CourseController -> DB : Write audit kursus <<W>>
+CourseController --> UI : Status simpan <<X>>
+UI --> Admin : Refresh daftar kursus <<X>>
 
-== VIDEO CONFERENCE INTEGRATION (CFP 40–48) ==
-User -> UI : (40) Membuka menu konferensi video
-User -> UI : (41) Bergabung ke ruang meeting
-User -> UI : (42) Mengatur perangkat audio dan video
-UI -> System : (43) Meminta akses konferensi video
-UI -> System : (44) Mengonfirmasi kehadiran meeting
-System -> API : (45) Meminta data meeting ke layanan video
-API -> System : (46) Mengirimkan link konferensi
-System -> API : (47) Mencatat sesi konferensi
-System -> API : (48) Menyimpan riwayat meeting
+Admin -> UI : Input judul materi <<E>>
+Admin -> UI : Input deskripsi materi <<E>>
+UI -> CourseController : Submit materi <<E>>
+CourseController -> DB : Write materi <<W>>
+CourseController -> DB : Write relasi materi <<W>>
+CourseController -> DB : Write audit materi <<W>>
+CourseController --> UI : Materi tersimpan <<X>>
 
-== MONITORING PEMBELAJARAN (CFP 49–59) ==
-Guru -> UI : (49) Membuka halaman monitoring belajar
-Guru -> UI : (50) Menentukan filter pemantauan
-Guru -> UI : (51) Memilih periode pembelajaran
-UI -> System : (52) Mengirim permintaan data monitoring
-System -> DB : (53) Mengambil data aktivitas siswa
-System -> DB : (54) Mengambil data nilai
-System -> DB : (55) Mengambil data kehadiran
-System -> DB : (56) Mengambil data tugas
-System -> DB : (57) Mengambil hasil kuis
-System -> DB : (58) Mengambil durasi belajar
-System -> DB : (59) Mengambil log pembelajaran
+Admin -> UI : Input soal kuis <<E>>
+Admin -> UI : Input opsi jawaban <<E>>
+UI -> CourseController : Submit kuis <<E>>
+CourseController -> DB : Write kuis <<W>>
+CourseController -> DB : Write soal kuis <<W>>
+CourseController -> DB : Write audit kuis <<W>>
+CourseController --> UI : Kuis tersimpan <<X>>
 
-== RAPOR DIGITAL (CFP 60–71) ==
-Guru -> UI : (60) Membuka menu rapor digital
-Guru -> UI : (61) Memasukkan nilai siswa
-Guru -> UI : (62) Menambahkan catatan guru
-UI -> System : (63) Mengirim permintaan pembuatan rapor
-System -> DB : (64) Mengambil nilai akademik
-System -> DB : (65) Mengambil nilai tugas
-System -> DB : (66) Mengambil nilai kuis
-System -> DB : (67) Mengambil data kehadiran
-System -> DB : (68) Mengambil penilaian sikap
-System -> DB : (69) Mengambil data semester
-System -> DB : (70) Menyimpan rapor digital
-System -> DB : (71) Menyimpan catatan guru
+== Manajemen KDMP ==
+Admin -> UI : Input judul KDMP <<E>>
+Admin -> UI : Input deskripsi KDMP <<E>>
+UI -> KDMPController : Submit KDMP <<E>>
+KDMPController -> DB : Read data KDMP <<R>>
+KDMPController -> DB : Read kategori KDMP <<R>>
+KDMPController -> DB : Write KDMP <<W>>
+KDMPController -> DB : Write detail KDMP <<W>>
+KDMPController -> DB : Write audit KDMP <<W>>
+KDMPController --> UI : Status KDMP <<X>>
 
-== FITUR PENDUKUNG SISTEM (CFP 72–77) ==
-System -> Notification : (72) Mengirim notifikasi hasil belajar ke siswa
-Notification -> User : (73) Menerima notifikasi hasil pembelajaran
-System -> DB : (74) Mengarsipkan data rapor siswa
-System -> DB : (75) Menyimpan histori perubahan nilai
-System -> DB : (76) Mencatat audit aktivitas pengguna
-System -> API : (77) Sinkronisasi data pembelajaran ke sistem eksternal
+Admin -> UI : Input materi KDMP <<E>>
+UI -> KDMPController : Submit materi KDMP <<E>>
+KDMPController -> DB : Write materi KDMP <<W>>
+KDMPController -> DB : Write relasi KDMP <<W>>
+KDMPController --> UI : Materi KDMP tersimpan <<X>>
+
+== Manajemen Webinar ==
+Admin -> UI : Input judul webinar <<E>>
+Admin -> UI : Input jadwal webinar <<E>>
+Admin -> UI : Input lokasi webinar <<E>>
+UI -> WebinarController : Submit webinar <<E>>
+WebinarController -> DB : Write webinar <<W>>
+WebinarController -> DB : Write detail webinar <<W>>
+WebinarController -> DB : Write audit webinar <<W>>
+WebinarController --> UI : Webinar tersimpan <<X>>
+
+Admin -> UI : Request peserta webinar <<E>>
+UI -> WebinarController : Load peserta <<E>>
+WebinarController -> DB : Read peserta <<R>>
+WebinarController -> DB : Read detail peserta <<R>>
+WebinarController --> UI : Data peserta <<X>>
+
+== Manajemen Peserta ==
+Admin -> UI : Input edit nama <<E>>
+Admin -> UI : Input edit email <<E>>
+UI -> UserController : Submit edit <<E>>
+UserController -> DB : Read user <<R>>
+UserController -> DB : Read role user <<R>>
+UserController -> DB : Write user <<W>>
+UserController -> DB : Write role user <<W>>
+UserController --> UI : Update sukses <<X>>
+
+Admin -> UI : Request detail peserta <<E>>
+UI -> UserController : Load detail <<E>>
+UserController -> DB : Read histori kursus <<R>>
+UserController -> DB : Read histori webinar <<R>>
+UserController --> UI : Detail tampil <<X>>
+
+== Logout ==
+Admin -> UI : Klik logout <<E>>
+UI -> AuthController : Hapus session <<E>>
+AuthController -> DB : Write audit logout <<W>>
+AuthController --> UI : Redirect login <<X>>
+UI --> Admin : Notifikasi logout berhasil <<X>>    // +CFP
 
 @enduml

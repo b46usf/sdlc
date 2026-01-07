@@ -1,148 +1,150 @@
 @startuml
-title Sistem Persuratan Elektronik Terintegrasi\nTotal CFP = 108
+title Sistem Persuratan Elektronik Terintegrasi - CFP Driven (Total CFP 108)
 
+autonumber
 actor User
 actor Pejabat
-participant UI
-participant System
+actor Admin
+boundary UI
+control System
 database DB
-participant API
-participant Notification
+control API
+control Notification
 
-== SURAT MASUK MANAGEMENT (CFP 1–8) ==
-User -> UI : (1) Membuka menu surat masuk
-UI -> System : (2) Mengirim permintaan daftar surat masuk
-System -> DB : (3) Mengambil data surat masuk
-DB -> System : (4) Mengirim data surat masuk
-System -> UI : (5) Menampilkan daftar surat masuk
-User -> UI : (6) Membuka detail surat
-UI -> System : (7) Meminta detail surat
-System -> DB : (8) Mengambil isi surat masuk
+== Surat Masuk Management ==
+User -> UI : Akses surat masuk <<E>>
+UI -> System : Request daftar surat masuk <<E>>
+System -> DB : Read surat masuk <<R>>
+System -> DB : Read metadata surat <<R>>
+System --> UI : Daftar surat masuk <<X>>
 
-== DISPOSISI ELEKTRONIK (CFP 9–16) ==
-Pejabat -> UI : (9) Membuka menu disposisi surat
-Pejabat -> UI : (10) Menentukan tujuan disposisi
-UI -> System : (11) Mengirim data disposisi
-System -> DB : (12) Menyimpan data disposisi
-System -> DB : (13) Menyimpan catatan disposisi
-System -> Notification : (14) Mengirim notifikasi disposisi
-Notification -> Pejabat : (15) Menerima notifikasi disposisi
-System -> DB : (16) Mencatat riwayat disposisi
+User -> UI : Buka detail surat <<E>>
+UI -> System : Request detail surat <<E>>
+System -> DB : Read isi surat <<R>>
+System --> UI : Detail surat tampil <<X>>
 
-== SURAT KELUAR CREATION (CFP 17–24) ==
-User -> UI : (17) Membuka menu surat keluar
-User -> UI : (18) Menulis isi surat
-User -> UI : (19) Menentukan tujuan surat
-UI -> System : (20) Mengirim data surat keluar
-System -> DB : (21) Menyimpan draft surat
-System -> DB : (22) Menyimpan metadata surat
-System -> UI : (23) Menampilkan status draft
-User -> UI : (24) Mengajukan surat untuk persetujuan
+== Disposisi Elektronik ==
+Pejabat -> UI : Input tujuan disposisi <<E>>
+Pejabat -> UI : Input catatan disposisi <<E>>
+UI -> System : Submit disposisi <<E>>
+System -> DB : Write disposisi <<W>>
+System -> DB : Write catatan disposisi <<W>>
+System -> Notification : Trigger notifikasi disposisi <<W>>
+Notification --> Pejabat : Notifikasi disposisi <<X>>
+System -> DB : Write histori disposisi <<W>>
 
-== WORKFLOW APPROVAL SURAT (CFP 25–32) ==
-System -> Pejabat : (25) Mengirim permintaan persetujuan
-Pejabat -> UI : (26) Membuka surat untuk ditinjau
-Pejabat -> UI : (27) Memberikan persetujuan atau revisi
-UI -> System : (28) Mengirim keputusan persetujuan
-System -> DB : (29) Menyimpan status persetujuan
-System -> DB : (30) Menyimpan catatan approval
-System -> Notification : (31) Mengirim notifikasi hasil approval
-System -> DB : (32) Mencatat alur workflow
+== Surat Keluar Creation ==
+User -> UI : Input isi surat <<E>>
+User -> UI : Input tujuan surat <<E>>
+UI -> System : Submit surat keluar <<E>>
+System -> DB : Write draft surat <<W>>
+System -> DB : Write metadata surat <<W>>
+System --> UI : Status draft <<X>>
+User -> UI : Ajukan persetujuan <<E>>
 
-== TANDA TANGAN DIGITAL (CFP 33–40) ==
-Pejabat -> UI : (33) Memilih surat untuk ditandatangani
-UI -> System : (34) Mengirim permintaan tanda tangan digital
-System -> API : (35) Memverifikasi identitas penandatangan
-API -> System : (36) Konfirmasi validasi identitas
-System -> API : (37) Menerapkan tanda tangan digital
-API -> System : (38) Mengirim hasil tanda tangan
-System -> DB : (39) Menyimpan surat bertanda tangan
-System -> DB : (40) Mencatat aktivitas e-signature
+== Workflow Approval Surat ==
+System -> Notification : Request persetujuan <<W>>
+Notification --> Pejabat : Notifikasi approval <<X>>
+Pejabat -> UI : Review surat <<E>>
+Pejabat -> UI : Input keputusan <<E>>
+UI -> System : Submit keputusan <<E>>
+System -> DB : Write status approval <<W>>
+System -> DB : Write catatan approval <<W>>
+System -> DB : Write histori workflow <<W>>
 
-== TEMPLATE SURAT MANAGEMENT (CFP 41–48) ==
-Admin -> UI : (41) Membuka menu template surat
-Admin -> UI : (42) Membuat atau mengubah template
-UI -> System : (43) Mengirim data template
-System -> DB : (44) Menyimpan template surat
-System -> DB : (45) Menyimpan versi template
-System -> UI : (46) Menampilkan daftar template
-Admin -> UI : (47) Menghapus template
-System -> DB : (48) Memperbarui data template
+== Tanda Tangan Digital ==
+Pejabat -> UI : Request tanda tangan <<E>>
+UI -> System : Submit e-sign request <<E>>
+System -> API : Verify identitas <<R>>
+API --> System : Identitas valid <<X>>
+System -> API : Apply digital signature <<W>>
+API --> System : Signature result <<X>>
+System -> DB : Write surat signed <<W>>
+System -> DB : Write log e-sign <<W>>
 
-== ARSIP DIGITAL OTOMATIS (CFP 49–56) ==
-System -> DB : (49) Mengklasifikasikan surat otomatis
-System -> DB : (50) Menentukan kategori arsip
-System -> DB : (51) Menyimpan arsip digital
-System -> DB : (52) Menyimpan indeks arsip
-System -> DB : (53) Menyimpan metadata arsip
-System -> DB : (54) Menyimpan status arsip
-System -> UI : (55) Menampilkan status pengarsipan
-System -> DB : (56) Mencatat log arsip
+== Template Surat Management ==
+Admin -> UI : Input template surat <<E>>
+UI -> System : Submit template <<E>>
+System -> DB : Write template <<W>>
+System -> DB : Write versi template <<W>>
+System --> UI : Daftar template <<X>>
 
-== PENCARIAN ARSIP CERDAS (CFP 57–61) ==
-User -> UI : (57) Memasukkan kata kunci pencarian arsip
-UI -> System : (58) Mengirim permintaan pencarian
-System -> DB : (59) Menelusuri arsip digital
-System -> UI : (60) Menampilkan hasil pencarian
-User -> UI : (61) Membuka arsip terpilih
+Admin -> UI : Hapus template <<E>>
+UI -> System : Submit delete <<E>>
+System -> DB : Write update template <<W>>
 
-== BUKU AGENDA ELEKTRONIK (CFP 62–68) ==
-User -> UI : (62) Membuka buku agenda surat
-UI -> System : (63) Meminta data agenda
-System -> DB : (64) Mengambil data agenda surat
-System -> UI : (65) Menampilkan agenda elektronik
-System -> DB : (66) Menyimpan pembaruan agenda
-System -> DB : (67) Menyimpan histori agenda
-System -> UI : (68) Menampilkan agenda terbaru
+== Arsip Digital Otomatis ==
+System -> DB : Write klasifikasi arsip <<W>>
+System -> DB : Write kategori arsip <<W>>
+System -> DB : Write arsip digital <<W>>
+System -> DB : Write indeks arsip <<W>>
+System -> DB : Write metadata arsip <<W>>
+System -> DB : Write status arsip <<W>>
+System --> UI : Status pengarsipan <<X>>
+System -> DB : Write log arsip <<W>>
 
-== NOTIFIKASI REAL-TIME (CFP 69–74) ==
-System -> Notification : (69) Mengirim notifikasi surat baru
-Notification -> User : (70) Menerima notifikasi real-time
-System -> Notification : (71) Mengirim notifikasi disposisi
-Notification -> Pejabat : (72) Menerima notifikasi disposisi
-System -> Notification : (73) Mengirim notifikasi persetujuan
-Notification -> User : (74) Menerima notifikasi persetujuan
+== Pencarian Arsip Cerdas ==
+User -> UI : Input kata kunci <<E>>
+UI -> System : Submit pencarian <<E>>
+System -> DB : Read arsip <<R>>
+System --> UI : Hasil pencarian <<X>>
+User -> UI : Buka arsip <<E>>
 
-== DASHBOARD MONITORING SURAT (CFP 75–78) ==
-Admin -> UI : (75) Membuka dashboard monitoring surat
-UI -> System : (76) Meminta data monitoring
-System -> DB : (77) Mengambil statistik persuratan
-System -> UI : (78) Menampilkan grafik monitoring
+== Buku Agenda Elektronik ==
+User -> UI : Request agenda <<E>>
+UI -> System : Load agenda <<E>>
+System -> DB : Read agenda <<R>>
+System --> UI : Agenda tampil <<X>>
+System -> DB : Write update agenda <<W>>
+System -> DB : Write histori agenda <<W>>
+System --> UI : Agenda terbaru <<X>>
 
-== LAPORAN PERSURATAN BERKALA (CFP 79–84) ==
-Admin -> UI : (79) Memilih periode laporan surat
-UI -> System : (80) Mengirim permintaan laporan
-System -> DB : (81) Mengambil data laporan
-System -> DB : (82) Mengolah data laporan
-System -> UI : (83) Menampilkan laporan persuratan
-System -> DB : (84) Menyimpan arsip laporan
+== Notifikasi Real-Time ==
+System -> Notification : Trigger surat baru <<W>>
+Notification --> User : Notifikasi surat <<X>>
+System -> Notification : Trigger disposisi <<W>>
+Notification --> Pejabat : Notifikasi disposisi <<X>>
+System -> Notification : Trigger approval <<W>>
+Notification --> User : Notifikasi approval <<X>>
 
-== SINKRONISASI DATA SIMPEG (CFP 85–91) ==
-System -> API : (85) Mengirim permintaan sinkronisasi SIMPEG
-API -> System : (86) Mengirim data pegawai
-System -> DB : (87) Memperbarui data pegawai
-System -> DB : (88) Menyimpan perubahan data
-System -> DB : (89) Validasi data sinkronisasi
-System -> UI : (90) Menampilkan status sinkronisasi
-System -> DB : (91) Mencatat log sinkronisasi
+== Dashboard Monitoring Surat ==
+Admin -> UI : Request dashboard <<E>>
+UI -> System : Load monitoring <<E>>
+System -> DB : Read statistik surat <<R>>
+System --> UI : Grafik monitoring <<X>>
 
-== AUDIT TRAIL SYSTEM (CFP 92–98) ==
-System -> DB : (92) Mencatat aktivitas pengguna
-System -> DB : (93) Mencatat perubahan data
-System -> DB : (94) Mencatat akses sistem
-System -> DB : (95) Menyimpan jejak audit
-Admin -> UI : (96) Membuka audit trail
-UI -> System : (97) Meminta data audit
-System -> DB : (98) Mengambil data audit
+== Laporan Persuratan Berkala ==
+Admin -> UI : Input periode laporan <<E>>
+UI -> System : Request laporan <<E>>
+System -> DB : Read data laporan <<R>>
+System -> DB : Write arsip laporan <<W>>
+System --> UI : Laporan tampil <<X>>
 
-== MOBILE APPLICATION SUPPORT (CFP 99–106) ==
-User -> UI : (99) Mengakses sistem melalui aplikasi mobile
-UI -> System : (100) Mengirim permintaan data mobile
-System -> API : (101) Menyediakan layanan mobile
-API -> System : (102) Mengirim respons mobile
-System -> DB : (103) Mengambil data untuk mobile
-System -> UI : (104) Menampilkan data di aplikasi mobile
-System -> DB : (105) Menyimpan log akses mobile
-System -> DB : (106) Mencatat aktivitas pengguna mobile
+== Sinkronisasi Data SIMPEG ==
+System -> API : Request data SIMPEG <<E>>
+API --> System : Data pegawai <<X>>
+System -> DB : Write data pegawai <<W>>
+System -> DB : Write log sinkronisasi <<W>>
+System --> UI : Status sinkronisasi <<X>>
+
+== Audit Trail System ==
+System -> DB : Write aktivitas user <<W>>
+System -> DB : Write perubahan data <<W>>
+System -> DB : Write akses sistem <<W>>
+System -> DB : Write audit trail <<W>>
+Admin -> UI : Request audit trail <<E>>
+UI -> System : Load audit trail <<E>>
+System -> DB : Read audit trail <<R>>
+System --> UI : Audit trail tampil <<X>>
+
+== Mobile Application Support ==
+User -> UI : Request mobile access <<E>>
+UI -> System : Request mobile data <<E>>
+System -> API : Serve mobile service <<W>>
+API --> System : Mobile response <<X>>
+System -> DB : Read mobile data <<R>>
+System --> UI : Mobile data tampil <<X>>
+System -> DB : Write log mobile <<W>>
+System -> DB : Write aktivitas mobile <<W>>
 
 @enduml

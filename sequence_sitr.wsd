@@ -1,120 +1,122 @@
 @startuml
-title Sistem Informasi Geospasial & Tata Ruang Terpadu\nTotal CFP = 84
+title Sistem Informasi Geospasial & Tata Ruang Terpadu - CFP Driven (Total CFP 84)
 
+autonumber
 actor User
 actor Petugas
-participant UI
-participant System
+boundary UI
+control System
 database DB
-participant API
-participant Notification
+control API
+control Notification
 
-== MANAJEMEN LAYER PETA GIS (CFP 1–8) ==
-Petugas -> UI : (1) Membuka menu pengelolaan layer peta
-UI -> System : (2) Mengirim permintaan data layer peta
-System -> DB : (3) Mengambil daftar layer GIS
-DB -> System : (4) Mengirim data layer
-System -> UI : (5) Menampilkan layer peta
-Petugas -> UI : (6) Menambah atau mengubah layer
-UI -> System : (7) Mengirim perubahan layer
-System -> DB : (8) Menyimpan konfigurasi layer
+== Manajemen Layer Peta GIS ==
+Petugas -> UI : Akses manajemen layer <<E>>
+UI -> System : Request data layer GIS <<E>>
+System -> DB : Read daftar layer <<R>>
+System --> UI : Data layer tampil <<X>>
 
-== VISUALISASI PETA INTERAKTIF (CFP 9–12) ==
-User -> UI : (9) Membuka tampilan peta interaktif
-UI -> System : (10) Meminta data peta
-System -> DB : (11) Mengambil data spasial
-System -> UI : (12) Menampilkan peta interaktif
+Petugas -> UI : Input tambah/ubah layer <<E>>
+UI -> System : Submit perubahan layer <<E>>
+System -> DB : Write konfigurasi layer <<W>>
 
-== RENCANA DETAIL TATA RUANG (RDTR) (CFP 13–20) ==
-Petugas -> UI : (13) Membuka dokumen RDTR
-UI -> System : (14) Mengirim permintaan data RDTR
-System -> DB : (15) Mengambil data RDTR
-DB -> System : (16) Mengirim data RDTR
-System -> UI : (17) Menampilkan RDTR
-Petugas -> UI : (18) Memperbarui data RDTR
-UI -> System : (19) Mengirim perubahan RDTR
-System -> DB : (20) Menyimpan pembaruan RDTR
+== Visualisasi Peta Interaktif ==
+User -> UI : Akses peta interaktif <<E>>
+UI -> System : Request data peta <<E>>
+System -> DB : Read data spasial <<R>>
+System --> UI : Peta interaktif tampil <<X>>
 
-== ANALISIS KESESUAIAN LAHAN (CFP 21–27) ==
-User -> UI : (21) Memilih lokasi untuk dianalisis
-UI -> System : (22) Mengirim data lokasi
-System -> DB : (23) Mengambil data zonasi lahan
-System -> DB : (24) Mengambil aturan tata ruang
-System -> UI : (25) Menampilkan hasil analisis lahan
-System -> DB : (26) Menyimpan hasil analisis
-System -> DB : (27) Mencatat riwayat analisis
+== Rencana Detail Tata Ruang (RDTR) ==
+Petugas -> UI : Request dokumen RDTR <<E>>
+UI -> System : Load data RDTR <<E>>
+System -> DB : Read data RDTR <<R>>
+System --> UI : RDTR tampil <<X>>
 
-== CEK KESESUAIAN LOKASI ONLINE (CFP 28–34) ==
-User -> UI : (28) Menginput titik lokasi online
-UI -> System : (29) Mengirim koordinat lokasi
-System -> DB : (30) Mengambil data peruntukan lahan
-System -> DB : (31) Mengambil ketentuan zonasi
-System -> UI : (32) Menampilkan status kesesuaian lokasi
-System -> DB : (33) Menyimpan hasil pengecekan
-System -> DB : (34) Mencatat aktivitas pengecekan
+Petugas -> UI : Input perubahan RDTR <<E>>
+UI -> System : Submit perubahan RDTR <<E>>
+System -> DB : Write update RDTR <<W>>
 
-== REKOMENDASI TATA RUANG (CFP 35–42) ==
-System -> DB : (35) Mengolah data kesesuaian lahan
-System -> DB : (36) Mengolah data RDTR
-System -> DB : (37) Menentukan alternatif pemanfaatan ruang
-System -> UI : (38) Menampilkan rekomendasi tata ruang
-User -> UI : (39) Memilih rekomendasi
-UI -> System : (40) Mengonfirmasi pilihan rekomendasi
-System -> DB : (41) Menyimpan rekomendasi terpilih
-System -> DB : (42) Mencatat hasil rekomendasi
+== Analisis Kesesuaian Lahan ==
+User -> UI : Pilih lokasi analisis <<E>>
+UI -> System : Submit lokasi <<E>>
+System -> DB : Read zonasi lahan <<R>>
+System -> DB : Read aturan tata ruang <<R>>
+System --> UI : Hasil analisis lahan <<X>>
+System -> DB : Write hasil analisis <<W>>
+System -> DB : Write histori analisis <<W>>
 
-== TRACKING PROYEK PERUMAHAN (CFP 43–50) ==
-Petugas -> UI : (43) Membuka data proyek perumahan
-UI -> System : (44) Meminta data proyek
-System -> DB : (45) Mengambil data lokasi proyek
-System -> DB : (46) Mengambil status pembangunan
-System -> UI : (47) Menampilkan progres proyek
-Petugas -> UI : (48) Memperbarui status proyek
-UI -> System : (49) Mengirim pembaruan status
-System -> DB : (50) Menyimpan progres proyek
+== Cek Kesesuaian Lokasi Online ==
+User -> UI : Input koordinat lokasi <<E>>
+UI -> System : Submit koordinat <<E>>
+System -> DB : Read peruntukan lahan <<R>>
+System -> DB : Read ketentuan zonasi <<R>>
+System --> UI : Status kesesuaian lokasi <<X>>
+System -> DB : Write hasil pengecekan <<W>>
+System -> DB : Write log pengecekan <<W>>
 
-== LAPORAN PELANGGARAN TATA RUANG (CFP 51–57) ==
-User -> UI : (51) Melaporkan dugaan pelanggaran tata ruang
-UI -> System : (52) Mengirim data laporan pelanggaran
-System -> DB : (53) Menyimpan laporan pelanggaran
-System -> DB : (54) Menyimpan lokasi pelanggaran
-System -> UI : (55) Menampilkan status laporan
-System -> Notification : (56) Mengirim notifikasi laporan baru
-System -> DB : (57) Mencatat riwayat laporan
+== Rekomendasi Tata Ruang ==
+System -> DB : Read data kesesuaian <<R>>
+System -> DB : Read data RDTR <<R>>
+System -> DB : Write alternatif pemanfaatan <<W>>
+System --> UI : Rekomendasi tata ruang <<X>>
 
-== INVENTARISASI KAWASAN PERMUKIMAN (CFP 58–65) ==
-Petugas -> UI : (58) Membuka data kawasan permukiman
-UI -> System : (59) Meminta data inventaris kawasan
-System -> DB : (60) Mengambil data kawasan
-System -> UI : (61) Menampilkan data permukiman
-Petugas -> UI : (62) Memperbarui data kawasan
-UI -> System : (63) Mengirim perubahan data
-System -> DB : (64) Menyimpan data inventaris
-System -> DB : (65) Mencatat histori perubahan
+User -> UI : Pilih rekomendasi <<E>>
+UI -> System : Konfirmasi rekomendasi <<E>>
+System -> DB : Write rekomendasi terpilih <<W>>
+System -> DB : Write histori rekomendasi <<W>>
 
-== LAPORAN TATA RUANG BERKALA (CFP 66–71) ==
-Petugas -> UI : (66) Memilih periode laporan tata ruang
-UI -> System : (67) Mengirim permintaan laporan
-System -> DB : (68) Mengambil data tata ruang
-System -> DB : (69) Mengolah data laporan
-System -> UI : (70) Menampilkan laporan berkala
-System -> DB : (71) Menyimpan arsip laporan
+== Tracking Proyek Perumahan ==
+Petugas -> UI : Request data proyek <<E>>
+UI -> System : Load data proyek <<E>>
+System -> DB : Read lokasi proyek <<R>>
+System -> DB : Read status pembangunan <<R>>
+System --> UI : Progres proyek <<X>>
 
-== API GEOSPASIAL (CFP 72–78) ==
-System -> API : (72) Mengirim permintaan data geospasial
-API -> System : (73) Mengirim data peta
-System -> DB : (74) Menyimpan cache data geospasial
-System -> UI : (75) Menyajikan data melalui API
-System -> DB : (76) Mencatat penggunaan API
-System -> DB : (77) Mencatat akses pihak eksternal
-System -> DB : (78) Menyimpan log API
+Petugas -> UI : Update status proyek <<E>>
+UI -> System : Submit status proyek <<E>>
+System -> DB : Write progres proyek <<W>>
 
-== ALERT PERUBAHAN RTRW (CFP 79–84) ==
-System -> DB : (79) Mendeteksi perubahan data RTRW
-System -> DB : (80) Membandingkan versi RTRW
-System -> Notification : (81) Mengirim notifikasi perubahan RTRW
-Notification -> User : (82) Menerima notifikasi perubahan
-System -> UI : (83) Menampilkan informasi perubahan RTRW
-System -> DB : (84) Mencatat log notifikasi
+== Laporan Pelanggaran Tata Ruang ==
+User -> UI : Input laporan pelanggaran <<E>>
+UI -> System : Submit laporan <<E>>
+System -> DB : Write laporan pelanggaran <<W>>
+System -> DB : Write lokasi pelanggaran <<W>>
+System --> UI : Status laporan <<X>>
+System -> Notification : Trigger notifikasi laporan <<W>>
+System -> DB : Write histori laporan <<W>>
+
+== Inventarisasi Kawasan Permukiman ==
+Petugas -> UI : Request data kawasan <<E>>
+UI -> System : Load inventaris kawasan <<E>>
+System -> DB : Read data kawasan <<R>>
+System --> UI : Data permukiman <<X>>
+
+Petugas -> UI : Update data kawasan <<E>>
+UI -> System : Submit perubahan kawasan <<E>>
+System -> DB : Write inventaris kawasan <<W>>
+System -> DB : Write histori perubahan <<W>>
+
+== Laporan Tata Ruang Berkala ==
+Petugas -> UI : Input periode laporan <<E>>
+UI -> System : Request laporan <<E>>
+System -> DB : Read data tata ruang <<R>>
+System -> DB : Write arsip laporan <<W>>
+System --> UI : Laporan berkala <<X>>
+
+== API Geospasial ==
+System -> API : Request data geospasial <<E>>
+API --> System : Data peta <<X>>
+System -> DB : Write cache geospasial <<W>>
+System --> UI : Data peta via API <<X>>
+System -> DB : Write log API <<W>>
+System -> DB : Write log akses eksternal <<W>>
+
+== Alert Perubahan RTRW ==
+System -> DB : Read perubahan RTRW <<R>>
+System -> DB : Read versi RTRW <<R>>
+System -> Notification : Trigger notifikasi RTRW <<W>>
+Notification --> User : Notifikasi perubahan <<X>>
+System --> UI : Informasi perubahan RTRW <<X>>
+System -> DB : Write log notifikasi <<W>>
 
 @enduml

@@ -1,229 +1,156 @@
 @startuml
-title High-Level CFP Sequence Diagram\nWebsite Pemerintah Provinsi Jawa Timur
+title Website Pemerintah Provinsi Jawa Timur
 
+autonumber
 actor User
 actor Admin
-participant UI
-participant System
+boundary UI
+control System
 database DB
-participant API
-participant Notification
+control API
+control Notification
 
-== AUTHENTICATION (297) ==
-User -> UI : (1) Akses form login
-UI -> System : (2) Kirim kredensial
-System -> DB : (3) Validasi user
-DB -> System : (4) Hasil validasi
-System -> UI : (5) Login sukses
-UI -> Admin : (6) Admin login
+== Authentication ==
+User -> UI : Input kredensial <<E>>
+UI -> System : Submit kredensial <<E>>
+System -> DB : Read user <<R>>
+System -> DB : Read role <<R>>
+System -> DB : Write session <<W>>
+System -> DB : Write audit login <<W>>
+System --> UI : Status login <<X>>
+UI --> Admin : Dashboard tampil <<X>>
 
-note right of System
-AUTHENTICATION (297)
-E=2 X=2 R=2 W=2
-CFP=8
-end note
+== CMS ==
+Admin -> UI : Request CMS <<E>>
+UI -> System : Load konten <<E>>
+System -> DB : Read konten <<R>>
+System -> DB : Read metadata <<R>>
+System --> UI : Data CMS <<X>>
 
-== CMS (286) ==
-Admin -> UI : (7) Akses CMS
-UI -> System : (8) Request konten
-System -> DB : (9) Query CMS
-DB -> System : (10) Data CMS
-System -> UI : (11) Render CMS
-Admin -> UI : (12) Edit konten
-UI -> System : (13) Submit perubahan
-System -> DB : (14) Update konten
-DB -> System : (15) OK
+Admin -> UI : Edit konten <<E>>
+UI -> System : Submit perubahan <<E>>
+System -> DB : Write konten <<W>>
+System -> DB : Write audit CMS <<W>>
+System --> UI : Status update <<X>>
 
-note right of System
-CMS (286)
-E=2 X=2 R=2 W=2
-CFP=8
-end note
+== Galeri Multimedia ==
+User -> UI : Request galeri <<E>>
+UI -> System : Load galeri <<E>>
+System -> DB : Read galeri <<R>>
+System --> UI : Data galeri <<X>>
 
-== GALERI MULTIMEDIA (287) ==
-User -> UI : (16) Akses galeri
-UI -> System : (17) Request galeri
-System -> DB : (18) Load galeri
-DB -> System : (19) Data galeri
-System -> UI : (20) Render galeri
-Admin -> UI : (21) Upload media
-UI -> System : (22) Simpan metadata
-System -> DB : (23) Insert media
+Admin -> UI : Upload media <<E>>
+UI -> System : Submit media <<E>>
+System -> DB : Write media <<W>>
+System -> DB : Write metadata media <<W>>
+System --> UI : Media tersimpan <<X>>
 
-note right of System
-Galeri Multimedia (287)
-E=2 X=2 R=1 W=2
-CFP=7
-end note
+== Portal Perizinan ==
+User -> UI : Request layanan izin <<E>>
+UI -> System : Load layanan <<E>>
+System -> DB : Read data izin <<R>>
+System --> UI : Form izin <<X>>
 
-== PORTAL PERIZINAN (289) ==
-User -> UI : (24) Akses layanan
-UI -> System : (25) Request izin
-System -> DB : (26) Ambil data izin
-DB -> System : (27) Data izin
-User -> UI : (28) Submit permohonan
-UI -> System : (29) Simpan permohonan
-System -> DB : (30) Insert izin
+User -> UI : Submit permohonan <<E>>
+UI -> System : Kirim permohonan <<E>>
+System -> DB : Write permohonan izin <<W>>
+System -> DB : Write audit izin <<W>>
+System --> UI : Status permohonan <<X>>
 
-note right of System
-Portal Perizinan (289)
-E=2 X=2 R=2 W=1
-CFP=7
-end note
+== Pengaduan Masyarakat ==
+User -> UI : Request form pengaduan <<E>>
+UI -> System : Load form <<E>>
+System -> DB : Read form <<R>>
+System --> UI : Form tampil <<X>>
 
-== PENGADUAN MASYARAKAT (290) ==
-User -> UI : (31) Akses pengaduan
-UI -> System : (32) Load form
-System -> DB : (33) Ambil form
-DB -> System : (34) Data form
-User -> UI : (35) Submit pengaduan
-UI -> System : (36) Simpan pengaduan
-System -> DB : (37) Insert pengaduan
+User -> UI : Submit pengaduan <<E>>
+UI -> System : Kirim pengaduan <<E>>
+System -> DB : Write pengaduan <<W>>
+System -> DB : Write audit pengaduan <<W>>
+System --> UI : Status pengaduan <<X>>
 
-note right of System
-Pengaduan Masyarakat (290)
-E=2 X=2 R=2 W=2
-CFP=8
-end note
+== Portal Data Terbuka ==
+User -> UI : Request dataset <<E>>
+UI -> System : Load dataset <<E>>
+System -> DB : Read dataset <<R>>
+System -> DB : Read metadata dataset <<R>>
+System --> UI : Dataset tampil <<X>>
 
-== PORTAL DATA TERBUKA (291) ==
-User -> UI : (38) Akses open data
-UI -> System : (39) Request dataset
-System -> DB : (40) Query dataset
-DB -> System : (41) Data dataset
-System -> UI : (42) Tampilkan dataset
-User -> UI : (43) Download dataset
+User -> UI : Download dataset <<E>>
+System --> UI : File dataset <<X>>
 
-note right of System
-Portal Data Terbuka (291)
-E=1 X=2 R=2 W=1
-CFP=6
-end note
+== Agenda & Event ==
+User -> UI : Request agenda <<E>>
+UI -> System : Load agenda <<E>>
+System -> DB : Read event <<R>>
+System --> UI : Agenda tampil <<X>>
 
-== AGENDA & EVENT (293) ==
-User -> UI : (44) Akses event
-UI -> System : (45) Request event
-System -> DB : (46) Query event
-DB -> System : (47) Data event
-System -> UI : (48) Render event
-Admin -> UI : (49) Input event
-UI -> System : (50) Simpan event
-System -> DB : (51) Insert event
+Admin -> UI : Input event <<E>>
+UI -> System : Submit event <<E>>
+System -> DB : Write event <<W>>
+System -> DB : Write audit event <<W>>
+System --> UI : Event tersimpan <<X>>
 
-note right of System
-Agenda & Event (293)
-E=2 X=2 R=1 W=2
-CFP=7
-end note
+== Live Streaming ==
+User -> UI : Request streaming <<E>>
+UI -> System : Load jadwal <<E>>
+System -> DB : Read jadwal <<R>>
+System -> API : Generate token <<W>>
+API --> UI : Streaming aktif <<X>>
 
-== LIVE STREAMING (296) ==
-User -> UI : (52) Akses streaming
-UI -> System : (53) Request streaming
-System -> DB : (54) Load jadwal
-DB -> System : (55) Data jadwal
-System -> API : (56) Generate token
-API -> UI : (57) Broadcast streaming
+== Halaman Statis ==
+User -> UI : Request halaman <<E>>
+UI -> System : Load halaman <<E>>
+System -> DB : Read halaman <<R>>
+System --> UI : Halaman tampil <<X>>
 
-note right of System
-Live Streaming (296)
-E=1 X=2 R=1 W=1
-CFP=5
-end note
+Admin -> UI : Edit halaman <<E>>
+UI -> System : Submit halaman <<E>>
+System -> DB : Write halaman <<W>>
+System -> DB : Write audit halaman <<W>>
+System --> UI : Status update <<X>>
 
-== HALAMAN STATIS (288) ==
-User -> UI : (58) Akses halaman
-UI -> System : (59) Request halaman
-System -> DB : (60) Query halaman
-DB -> System : (61) Data halaman
-System -> UI : (62) Tampilkan halaman
-Admin -> UI : (63) Edit halaman
-UI -> System : (64) Update halaman
-System -> DB : (65) Save halaman
+== Direktori OPD ==
+User -> UI : Request direktori OPD <<E>>
+UI -> System : Load OPD <<E>>
+System -> DB : Read OPD <<R>>
+System --> UI : Direktori tampil <<X>>
 
-note right of System
-Halaman Statis (288)
-E=1 X=2 R=2 W=2
-CFP=7
-end note
+Admin -> UI : Update OPD <<E>>
+UI -> System : Submit OPD <<E>>
+System -> DB : Write OPD <<W>>
+System --> UI : Status update <<X>>
 
-== DIREKTORI OPD (294) ==
-User -> UI : (66) Akses direktori
-UI -> System : (67) Request OPD
-System -> DB : (68) Query OPD
-DB -> System : (69) Data OPD
-System -> UI : (70) Render OPD
-Admin -> UI : (71) Update OPD
-System -> DB : (72) Save OPD
+== Visualisasi Data ==
+User -> UI : Request grafik <<E>>
+UI -> System : Load statistik <<E>>
+System -> DB : Read statistik <<R>>
+System --> UI : Grafik tampil <<X>>
 
-note right of System
-Direktori OPD (294)
-E=1 X=2 R=2 W=1
-CFP=6
-end note
+== Dashboard Analytics ==
+Admin -> UI : Request analytics <<E>>
+UI -> System : Load analytics <<E>>
+System -> DB : Read analytics <<R>>
+System -> DB : Read ringkasan <<R>>
+System --> UI : Dashboard analytics <<X>>
 
-== VISUALISASI DATA (292) ==
-User -> UI : (73) Akses grafik
-UI -> System : (74) Request data
-System -> DB : (75) Ambil statistik
-DB -> System : (76) Data statistik
-System -> UI : (77) Render grafik
+== Search Engine ==
+User -> UI : Input kata kunci <<E>>
+UI -> System : Submit query <<E>>
+System -> DB : Read index <<R>>
+System --> UI : Hasil pencarian <<X>>
 
-note right of System
-Visualisasi Data (292)
-E=0 X=2 R=2 W=0
-CFP=4
-end note
+== Push Notification ==
+System -> Notification : Trigger notifikasi <<W>>
+Notification --> User : Notifikasi terkirim <<X>>
+User -> UI : Baca notifikasi <<E>>
 
-== DASHBOARD ANALYTICS (298) ==
-Admin -> UI : (78) Akses dashboard
-UI -> System : (79) Request analytics
-System -> DB : (80) Query analytics
-DB -> System : (81) Data analytics
-System -> UI : (82) Tampilkan dashboard
-
-note right of System
-Dashboard Analytics (298)
-E=0 X=2 R=2 W=1
-CFP=5
-end note
-
-== SEARCH ENGINE (295) ==
-User -> UI : (83) Input query
-UI -> System : (84) Submit query
-System -> DB : (85) Query index
-DB -> System : (86) Hasil pencarian
-System -> UI : (87) Tampilkan hasil
-
-note right of System
-Search Engine (295)
-E=1 X=2 R=2 W=0
-CFP=5
-end note
-
-== PUSH NOTIFICATION (299) ==
-System -> Notification : (88) Trigger notifikasi
-Notification -> User : (89) Kirim notifikasi
-User -> UI : (90) Baca notifikasi
-
-note right of System
-Push Notification (299)
-E=1 X=2 R=1 W=2
-CFP=6
-end note
-
-== REST API INTEGRATION (300) ==
-User -> API : (91) Request API
-API -> System : (92) Validasi token
-System -> DB : (93) Query data
-DB -> System : (94) Data source
-System -> API : (95) JSON response
-API -> UI : (96) Response UI
-UI -> User : (97) Tampilkan hasil
-
-note right of System
-REST API (300)
-E=2 X=2 R=2 W=2
-CFP=8
-end note
-
+== REST API Integration ==
+User -> API : Request API <<E>>
+API -> System : Validasi token <<E>>
+System -> DB : Read data <<R>>
+System -> DB : Read konfigurasi API <<R>>
+System --> API : Response JSON <<X>>
+API --> UI : Data diterima <<X>>
+UI --> User : Data tampil <<X>>
 @enduml
